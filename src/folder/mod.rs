@@ -38,7 +38,7 @@ pub fn run(config: &FolderConfig) {
             .arg("-c")
             .arg(format!("mkdir -v {}", config.dir_name))
             .output()
-            .expect("Failed to create folder");
+            .expect("Failed to spawn mkdir process");
     
         let stdout = format_output(&command.stdout);
         let stderr = format_output(&command.stderr);
