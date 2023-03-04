@@ -14,10 +14,11 @@ pub struct FolderConfig {
 }
 
 /// Takes a buffer and returns an String
-/// replacing "mkdir: " for "folder: ".
+/// replacing "mkdir: " and "rm: " for "folder: ".
 pub fn format_output(buf: &Vec<u8>) -> String {
     let str = from_utf8(&buf).unwrap_or("");
     let str = str.replace("mkdir: ", "folder: ");
+    let str = str.replace("rm: ", "folder: ");
     
     String::from(str.trim())
 }
@@ -50,5 +51,15 @@ pub fn run(config: &FolderConfig) {
             eprintln!("{}", stderr);
             process::exit(1);
         }
+    } else if config.mode == Mode::DELETE {
+        let command = Command::new("sh")
+            .arg("-c")
+            .arg(format!("rm -v -r -I {}", config.dir_name))
+            .spawn()
+            .expect("Failed to spawn rm process");
+        
+        let output = command.wait_with_output().unwrap();
+
+        process::exit(output.status.code().unwrap_or(0));
     }
 }
