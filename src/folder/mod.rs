@@ -1,6 +1,7 @@
 use std::process::Command;
 use std::io::{self, Write};
 
+#[derive(PartialEq)]
 pub enum Mode {
     NEW,
     DELETE,
@@ -23,11 +24,14 @@ pub fn resolve_mode(arg: &String) -> Mode {
 }
 
 pub fn run(config: &FolderConfig) {
-    let output = Command::new("sh")
-        .arg("-c")
-        .arg(format!("mkdir -v {}", config.dir_name))
-        .output()
-        .expect("Failed to created folder");
+    if config.mode == Mode::NEW {
+        let command = Command::new("sh")
+            .arg("-c")
+            .arg(format!("mkdir -v {}", config.dir_name))
+            .output()
+            .expect("Failed to created folder");
     
-    io::stdout().write_all(&output.stdout).unwrap();
+        io::stdout().write_all(&command.stdout).unwrap();
+        io::stderr().write_all(&command.stderr).unwrap();
+    }
 }
