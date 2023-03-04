@@ -13,15 +13,15 @@ fn main() {
 
 pub fn parse_config(args: Vec<String>) -> FolderConfig {
     if args.len() < 3 {
-        println!("folder: More arguments needed");
-        process::exit(-1);
+        eprintln!("folder: More arguments needed");
+        process::exit(1);
     }
 
     let mode = folder::resolve_mode(&args[1]);
     match mode {
         Mode::UNKNOW => {
-            println!("folder: Unknow mode {}", &args[1]);
-            process::exit(-1);
+            eprintln!("folder: Unknow mode {}", &args[1]);
+            process::exit(1);
         }
         _ => ()
     };
