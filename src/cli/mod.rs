@@ -24,9 +24,9 @@ pub fn parse_options(args: &Vec<String>) {
     let map = options_map();
     let mut options: Vec<&Options> = Vec::new();
 
-    if options.len() == 0 { return };
+    if args.len() == 0 { return };
 
-    for arg in args {
+    for arg in args { // FIXME: This is always returning Options::UNKNOW
         let option = map.get(arg).unwrap_or(&Options::UNKNOW);
         options.push(option);
     }
