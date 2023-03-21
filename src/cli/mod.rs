@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, process};
 
 // Should be the same as the one specified
 // at the Cargo.toml file.
@@ -34,5 +34,14 @@ pub fn parse_options(args: Vec<String>) {
 }
 
 pub fn run_options(ops: Vec<&Options>) {
-
+    for op in ops {
+        if op == &Options::HELP {
+            println!("Help message");
+        } else if op == &Options::VERSION {
+            println!("Folder version {VERSION}.");
+        } else if op == &Options::UNKNOW {
+            eprintln!("An unknow options was passed.");
+            process::exit(1);
+        }
+    }
 }
