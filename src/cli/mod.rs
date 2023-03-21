@@ -42,7 +42,7 @@ pub fn run_options(ops: Vec<&Options>) {
         } else if op == &Options::VERSION {
             println!("Folder version {VERSION}.");
         } else if op == &Options::UNKNOW {
-            eprintln!("An unknow options was passed.");
+            eprintln!("folder: An unknow options was passed.");
             process::exit(1);
         }
     }
