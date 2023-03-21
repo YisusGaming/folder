@@ -3,6 +3,7 @@ use std::env;
 use folder::{FolderConfig, Mode};
 
 pub mod folder;
+pub mod cli;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
