@@ -8,12 +8,14 @@ pub mod cli;
 fn main() {
     let args: Vec<String> = env::args().collect();
 
+    // Evalute cli options first becuase some of them
+    // could trigger a premature exit.
     cli::parse_options(&args);
-    let config = parse_config(args);
+    let config = parse_config(&args);
     folder::run(&config);
 }
 
-pub fn parse_config(args: Vec<String>) -> FolderConfig {
+pub fn parse_config(args: &Vec<String>) -> FolderConfig {
     if args.len() < 3 {
         eprintln!("folder: More arguments needed");
         process::exit(1);
