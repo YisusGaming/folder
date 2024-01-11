@@ -5,12 +5,12 @@ use std::str::from_utf8;
 pub enum Mode {
     NEW,
     DELETE,
-    UNKNOW
+    UNKNOW,
 }
 
 pub struct FolderConfig {
     pub mode: Mode,
-    pub dir_name: String
+    pub dir_name: String,
 }
 
 /// Takes a buffer and returns an String
@@ -19,7 +19,7 @@ pub fn format_output(buf: &Vec<u8>) -> String {
     let str = from_utf8(&buf).unwrap_or("");
     let str = str.replace("mkdir: ", "folder: ");
     let str = str.replace("rm: ", "folder: ");
-    
+
     String::from(str.trim())
 }
 
@@ -27,7 +27,7 @@ pub fn resolve_mode(arg: &String) -> Mode {
     if arg == "new" {
         return Mode::NEW;
     } else if arg == "del" {
-        return Mode::DELETE
+        return Mode::DELETE;
     }
 
     Mode::UNKNOW
@@ -40,7 +40,7 @@ pub fn run(config: &FolderConfig) {
             .arg(format!("mkdir -v {}", config.dir_name))
             .output()
             .expect("Failed to spawn mkdir process");
-    
+
         let stdout = format_output(&command.stdout);
         let stderr = format_output(&command.stderr);
 
@@ -57,9 +57,10 @@ pub fn run(config: &FolderConfig) {
             .arg(format!("rm -v -r -I {}", config.dir_name))
             .spawn()
             .expect("Failed to spawn rm process");
-        
+
         let output = command.wait_with_output().unwrap();
 
         process::exit(output.status.code().unwrap_or(0));
     }
 }
+
