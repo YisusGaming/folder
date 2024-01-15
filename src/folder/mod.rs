@@ -15,7 +15,7 @@ pub struct FolderConfig {
 
 /// Takes a buffer and returns an String
 /// replacing "mkdir: " and "rm: " for "folder: ".
-pub fn format_output(buf: &Vec<u8>) -> String {
+pub fn format_output(buf: &[u8]) -> String {
     let str = from_utf8(&buf).unwrap_or("");
     let str = str.replace("mkdir: ", "folder: ");
     let str = str.replace("rm: ", "folder: ");
@@ -23,7 +23,7 @@ pub fn format_output(buf: &Vec<u8>) -> String {
     String::from(str.trim())
 }
 
-pub fn resolve_mode(arg: &String) -> Mode {
+pub fn resolve_mode(arg: &str) -> Mode {
     if arg == "new" {
         return Mode::NEW;
     } else if arg == "del" {

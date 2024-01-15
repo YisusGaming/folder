@@ -15,7 +15,7 @@ fn main() {
     folder::run(&config);
 }
 
-pub fn parse_config(args: &Vec<String>) -> FolderConfig {
+pub fn parse_config(args: &[String]) -> FolderConfig {
     if args.len() < 3 {
         eprintln!("folder: More arguments needed");
         process::exit(1);
@@ -34,4 +34,3 @@ pub fn parse_config(args: &Vec<String>) -> FolderConfig {
 
     FolderConfig { mode, dir_name }
 }
-

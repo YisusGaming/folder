@@ -1,4 +1,4 @@
-use std::{collections::HashMap, process};
+use std::process;
 
 // Should be the same as the one specified
 // at the Cargo.toml file.
@@ -10,22 +10,13 @@ pub enum Options {
     VERSION,
     UNKNOW,
 }
-fn options_map() -> HashMap<String, Options> {
-    let mut map: HashMap<String, Options> = HashMap::new();
-
-    map.insert(String::from("--help"), Options::HELP);
-    map.insert(String::from("--version"), Options::VERSION);
-
-    map
-}
 
 /// Takes in all the cli arguments as a parameter and
 /// resolves which arguments are valid cli options.
 ///
 /// Automatically executes the options found.
-pub fn parse_options(args: &Vec<String>) {
-    let map = options_map();
-    let mut options: Vec<&Options> = Vec::new();
+pub fn parse_options(args: &[String]) {
+    let mut options: Vec<Options> = Vec::new();
 
     if args.len() == 0 {
         return;
@@ -38,27 +29,39 @@ pub fn parse_options(args: &Vec<String>) {
             continue;
         }
         // We also ignore any argument not formatted as an option.
-        if !arg.starts_with("--") {
+        if !arg.starts_with("--") || !arg.starts_with("-") {
             continue;
         }
 
-        let option = map.get(arg).unwrap_or(&Options::UNKNOW);
+        let option = match arg.as_str() {
+            "--help" | "-h" => Options::HELP,
+            "--version" | "-v" => Options::VERSION,
+            _ => Options::UNKNOW,
+        };
+
         options.push(option);
     }
 
-    run_options(options);
+    run_options(&options);
 }
 
-pub fn run_options(ops: Vec<&Options>) {
+pub fn run_options(ops: &[Options]) {
     for op in ops {
         if op == &Options::HELP {
-            println!("Help message");
+            println!("Usage:");
+            println!("    folder <mode> <path>");
+            println!("Modes:");
+            println!("    new - Creates a new folder.");
+            println!("    del - Deletes a folder and its contents.");
+            println!("Options:");
+            println!("    -v, --version | Shows the program version.");
+            println!("    -h, --help| Shows help message.");
 
             // Options like this would trigger a premature exit.
             process::exit(0);
         } else if op == &Options::VERSION {
             println!("Folder v{VERSION}");
-            println!("Made by Yisus. 2023.\n@ItsJustYisus & @yisuscoding on Youtube.");
+            println!("Made by Yisus. 2024.\n@ItsJustYisus & @yisuscoding on Youtube.");
             println!("Happy Hacking!");
 
             // Options like this would trigger a premature exit.
@@ -69,4 +72,3 @@ pub fn run_options(ops: Vec<&Options>) {
         }
     }
 }
-
