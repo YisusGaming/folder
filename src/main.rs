@@ -15,13 +15,14 @@ fn main() {
     folder::run(&config);
 }
 
+/// Generates the configuration that will be used to run Folder.
 pub fn parse_config(args: &[String]) -> FolderConfig {
     if args.len() < 3 {
         eprintln!("folder: More arguments needed");
         process::exit(1);
     }
 
-    let mode = folder::resolve_mode(&args[1]);
+    let mode = folder::Mode::resolve_mode(&args[1]);
     match mode {
         Mode::UNKNOW => {
             eprintln!("folder: Unknow mode {}", &args[1]);

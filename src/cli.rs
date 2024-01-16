@@ -5,9 +5,13 @@ use std::process;
 pub const VERSION: &str = "1.0.0";
 
 #[derive(PartialEq)]
+/// CLI options.
 pub enum Options {
     HELP,
     VERSION,
+
+    /// This is not a CLI option, it's just used to
+    /// handle the case where an unknow argument was passed.
     UNKNOW,
 }
 
@@ -45,6 +49,7 @@ pub fn parse_options(args: &[String]) {
     run_options(&options);
 }
 
+/// Runs a list of CLI [`Options`].
 pub fn run_options(ops: &[Options]) {
     for op in ops {
         if op == &Options::HELP {

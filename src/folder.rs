@@ -7,7 +7,22 @@ pub enum Mode {
     DELETE,
     UNKNOW,
 }
+impl Mode {
+    /// Resolves the [`Mode`] Folder will run, which will be `Mode::NEW` if
+    /// `arg` is "new", `Mode::DELETE` if `arg` is "del", or `Mode::UNKNOW` if
+    /// `arg` is anything else.
+    pub fn resolve_mode(arg: &str) -> Mode {
+        if arg == "new" {
+            return Mode::NEW;
+        } else if arg == "del" {
+            return Mode::DELETE;
+        }
 
+        Mode::UNKNOW
+    }
+}
+
+/// Specifies the mode Folder will run and the dirname that will be used.
 pub struct FolderConfig {
     pub mode: Mode,
     pub dir_name: String,
@@ -23,16 +38,7 @@ pub fn format_output(buf: &[u8]) -> String {
     String::from(str.trim())
 }
 
-pub fn resolve_mode(arg: &str) -> Mode {
-    if arg == "new" {
-        return Mode::NEW;
-    } else if arg == "del" {
-        return Mode::DELETE;
-    }
-
-    Mode::UNKNOW
-}
-
+/// Executes Folder using the specified [`FolderConfig`].
 pub fn run(config: &FolderConfig) {
     if config.mode == Mode::NEW {
         let command = Command::new("sh")
@@ -63,4 +69,3 @@ pub fn run(config: &FolderConfig) {
         process::exit(output.status.code().unwrap_or(0));
     }
 }
-
