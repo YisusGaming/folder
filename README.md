@@ -24,3 +24,8 @@ folder del dirname
 that'll run `rm -v -r -I dirname` for you.
 
 **Keep in mind!** This is not meant to be complete CLI to manage folders, it's just simply a convenience.
+
+# License
+
+Licensed under the MIT License.
+See [LICENSE](LICENSE) for details.
