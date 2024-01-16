@@ -1,6 +1,15 @@
 [package]
 name = "folder"
 version = "1.0.0"
+authors = ["Jesús Blanco"]
+license = "MIT"
+description = "CLI Program to manage folders."
+readme = "README.md"
+homepage = "https://github.com/YisusGaming/folder"
+repository = "https://github.com/YisusGaming/folder"
+keywords = ["cli", "tools", "manager", "cli-tools", "filesystem"]
+categories = ["command-line-utilities"]
+
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

@@ -1,9 +1,29 @@
+//! **Folder** is just a simple wrapper around `mkdir` and `rm` that allows you create and delete folders.
+//!
+//! Creating a folder looks like this:
+//!
+//! ```sh
+//! folder new dirname
+//! ```
+//!
+//! that'll run `mkdir -v dirname` for you.
+//!
+//! Deleting folders looks like this:
+//!
+//! ```sh
+//! folder del dirname
+//! ```
+//!
+//! that'll run `rm -v -r -I dirname` for you.
+//!
+//! **Keep in mind!** This is not meant to be complete CLI to manage folders, it's just simply a convenience.
+
 use folder::{FolderConfig, Mode};
 use std::env;
 use std::process;
 
-pub mod cli;
-pub mod folder;
+mod cli;
+mod folder;
 
 fn main() {
     let args: Vec<String> = env::args().skip(1).collect();
