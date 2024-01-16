@@ -8,7 +8,7 @@ pub mod folder;
 fn main() {
     let args: Vec<String> = env::args().skip(1).collect();
 
-    // Evaluate cli options first becuase some of them
+    // Evaluate cli options first because some of them
     // could trigger a premature exit.
     cli::parse_options(&args);
     let config = parse_config(&args);
@@ -24,8 +24,8 @@ pub fn parse_config(args: &[String]) -> FolderConfig {
 
     let mode = folder::Mode::resolve_mode(&args[0]);
     match mode {
-        Mode::UNKNOW => {
-            eprintln!("folder: Unknow mode {}", &args[0]);
+        Mode::UNKNOWN => {
+            eprintln!("folder: Unknown mode {}", &args[0]);
             process::exit(1);
         }
         _ => (),

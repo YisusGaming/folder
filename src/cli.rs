@@ -11,8 +11,8 @@ pub enum Options {
     VERSION,
 
     /// This is not a CLI option, it's just used to
-    /// handle the case where an unknow argument was passed.
-    UNKNOW,
+    /// handle the case where an unknown argument was passed.
+    UNKNOWN,
 }
 
 /// Takes in all the cli arguments as a parameter and
@@ -32,7 +32,7 @@ pub fn parse_options(args: &[String]) {
             "--version" | "-v" => options.push(Options::VERSION),
             "--help" | "-h" => options.push(Options::HELP),
 
-            _ => options.push(Options::UNKNOW),
+            _ => options.push(Options::UNKNOWN),
         }
     }
 
@@ -64,8 +64,8 @@ pub fn run_options(ops: &[Options]) {
                 // Options like this would trigger a premature exit.
                 process::exit(0);
             }
-            Options::UNKNOW => {
-                eprintln!("folder: An unknow option was passed.");
+            Options::UNKNOWN => {
+                eprintln!("folder: An UNKNOWN option was passed.");
                 process::exit(1);
             }
         }

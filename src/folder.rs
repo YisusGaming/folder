@@ -5,11 +5,11 @@ use std::str::from_utf8;
 pub enum Mode {
     NEW,
     DELETE,
-    UNKNOW,
+    UNKNOWN,
 }
 impl Mode {
     /// Resolves the [`Mode`] Folder will run, which will be `Mode::NEW` if
-    /// `arg` is "new", `Mode::DELETE` if `arg` is "del", or `Mode::UNKNOW` if
+    /// `arg` is "new", `Mode::DELETE` if `arg` is "del", or `Mode::UNKNOWN` if
     /// `arg` is anything else.
     pub fn resolve_mode(arg: &str) -> Mode {
         if arg == "new" {
@@ -18,7 +18,7 @@ impl Mode {
             return Mode::DELETE;
         }
 
-        Mode::UNKNOW
+        Mode::UNKNOWN
     }
 }
 
