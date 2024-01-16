@@ -1,3 +1,5 @@
+[![build](https://github.com/YisusGaming/folder/actions/workflows/rust.yml/badge.svg)](https://github.com/YisusGaming/folder/actions/workflows/rust.yml)
+
 <div align="center">
 <h1>Folder</h1>
 
