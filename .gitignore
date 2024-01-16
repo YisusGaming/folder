@@ -1,2 +1,5 @@
 # folders
 target/
+
+# editor
+.vscode/

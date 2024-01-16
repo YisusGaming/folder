@@ -6,7 +6,7 @@ pub mod cli;
 pub mod folder;
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
+    let args: Vec<String> = env::args().skip(1).collect();
 
     // Evaluate cli options first becuase some of them
     // could trigger a premature exit.
@@ -17,21 +17,21 @@ fn main() {
 
 /// Generates the configuration that will be used to run Folder.
 pub fn parse_config(args: &[String]) -> FolderConfig {
-    if args.len() < 3 {
+    if args.len() < 2 {
         eprintln!("folder: More arguments needed");
         process::exit(1);
     }
 
-    let mode = folder::Mode::resolve_mode(&args[1]);
+    let mode = folder::Mode::resolve_mode(&args[0]);
     match mode {
         Mode::UNKNOW => {
-            eprintln!("folder: Unknow mode {}", &args[1]);
+            eprintln!("folder: Unknow mode {}", &args[0]);
             process::exit(1);
         }
         _ => (),
     };
 
-    let dir_name = String::from(&args[2]);
+    let dir_name = String::from(&args[1]);
 
     FolderConfig { mode, dir_name }
 }
