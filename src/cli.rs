@@ -2,9 +2,9 @@ use std::process;
 
 // Should be the same as the one specified
 // at the Cargo.toml file.
-pub const VERSION: &str = "1.0.0";
+pub const VERSION: &str = "2.0.0";
 
-#[derive(PartialEq)]
+#[derive(Debug, PartialEq)]
 /// CLI options.
 pub enum Options {
     HELP,
@@ -24,7 +24,7 @@ pub fn parse_options(args: &[String]) {
 
     for arg in args {
         // Ignore arg if it's not formatted like an option.
-        if !arg.starts_with("--") || !arg.starts_with("-") {
+        if !arg.starts_with("--") && !arg.starts_with("-") {
             continue;
         }
 
