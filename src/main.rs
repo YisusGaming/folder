@@ -18,21 +18,21 @@
 //!
 //! **Keep in mind!** This is not meant to be complete CLI to manage folders, it's just simply a convenience.
 
-use folder::{FolderConfig, Mode};
+use folder::FolderConfig;
 use std::env;
 use std::process;
 
 mod cli;
 mod folder;
 
-fn main() {
+fn main() -> process::ExitCode {
     let args: Vec<String> = env::args().skip(1).collect();
 
     // Evaluate cli options first because some of them
     // could trigger a premature exit.
     cli::parse_options(&args);
     let config = parse_config(&args);
-    folder::run(&config);
+    folder::run(&config)
 }
 
 /// Generates the configuration that will be used to run Folder.
@@ -43,13 +43,6 @@ pub fn parse_config(args: &[String]) -> FolderConfig {
     }
 
     let mode = folder::Mode::resolve_mode(&args[0]);
-    match mode {
-        Mode::UNKNOWN => {
-            eprintln!("folder: Unknown mode {}", &args[0]);
-            process::exit(1);
-        }
-        _ => (),
-    };
 
     let dir_name = String::from(&args[1]);
 
