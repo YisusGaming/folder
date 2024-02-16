@@ -13,13 +13,11 @@ impl<'a> Mode<'a> {
     /// `arg` is "new", `Mode::DELETE` if `arg` is "del", or `Mode::UNKNOWN` if
     /// `arg` is anything else.
     pub fn resolve_mode(arg: &str) -> Mode {
-        if arg == "new" {
-            return Mode::NEW;
-        } else if arg == "del" {
-            return Mode::DELETE;
+        match arg {
+            "new" => Mode::NEW,
+            "del" => Mode::DELETE,
+            _ => Mode::UNKNOWN(arg),
         }
-
-        Mode::UNKNOWN(arg)
     }
 }
 
