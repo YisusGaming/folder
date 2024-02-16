@@ -1,4 +1,4 @@
-use std::process;
+use std::{fs, io};
 
 #[derive(PartialEq)]
 pub enum Mode<'a> {
@@ -24,18 +24,27 @@ impl<'a> Mode<'a> {
 /// Specifies the mode Folder will run and the dirname that will be used.
 pub struct FolderConfig<'a> {
     pub mode: Mode<'a>,
-    pub dir_name: String,
+    pub dir_name: &'a str,
 }
 
 /// Executes Folder using the specified [`FolderConfig`].
-pub fn run(config: &FolderConfig) -> process::ExitCode {
+pub fn run(config: &FolderConfig) -> io::Result<()> {
     match config.mode {
-        Mode::NEW => todo!(),
-        Mode::DELETE => todo!(),
+        Mode::NEW => {
+            fs::create_dir_all(config.dir_name)?;
+            println!("folder: created directory {}.", config.dir_name);
+
+            Ok(())
+        }
+        Mode::DELETE => {
+            /* TODO: Ask before removing. */
+            fs::remove_dir_all(config.dir_name)
+        }
         Mode::UNKNOWN(mode) => {
-            eprintln!("folder: unknown mode \"{mode}\" passed in.");
-            return process::ExitCode::from(1);
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidInput,
+                format!("folder: unknown mode \"{mode}\" passed in."),
+            ));
         }
     }
-    todo!()
 }

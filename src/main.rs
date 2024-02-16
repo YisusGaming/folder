@@ -32,7 +32,14 @@ fn main() -> process::ExitCode {
     // could trigger a premature exit.
     cli::parse_options(&args);
     let config = parse_config(&args);
-    folder::run(&config)
+
+    match folder::run(&config) {
+        Ok(_) => process::ExitCode::from(0),
+        Err(err) => {
+            eprintln!("{err}");
+            process::ExitCode::from(1)
+        }
+    }
 }
 
 /// Generates the configuration that will be used to run Folder.
@@ -44,7 +51,7 @@ pub fn parse_config(args: &[String]) -> FolderConfig {
 
     let mode = folder::Mode::resolve_mode(&args[0]);
 
-    let dir_name = String::from(&args[1]);
+    let dir_name = &args[1];
 
     FolderConfig { mode, dir_name }
 }
