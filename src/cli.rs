@@ -68,7 +68,7 @@ pub fn run_options(ops: &[Options]) {
                 process::exit(0);
             }
             Options::UNKNOWN => {
-                eprintln!("folder: An UNKNOWN option was passed.");
+                eprintln!("folder: An unknown option was passed.");
                 process::exit(1);
             }
         }
