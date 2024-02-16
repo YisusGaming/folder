@@ -1,4 +1,4 @@
-use std::{fs, io};
+use std::{fs, io, path};
 
 use crate::cli;
 
@@ -34,20 +34,21 @@ pub fn run(config: &FolderConfig) -> io::Result<()> {
     match config.mode {
         Mode::NEW => {
             fs::create_dir_all(config.dir_name)?;
-            println!("folder: created directory {}.", config.dir_name);
+            println!("folder: created directory '{}'.", config.dir_name);
 
             Ok(())
         }
         Mode::DELETE => {
             if !cli::question(&format!(
-                "Are you sure you want to delete {} and all of its contents?",
+                "Are you sure you want to delete '{}' and all of its contents?",
                 config.dir_name
             ))? {
                 return Ok(());
             }
 
-            fs::remove_dir_all(config.dir_name)?;
-            println!("folder: deleted directory {}.", config.dir_name);
+            delete_directory_contents(path::Path::new(config.dir_name))?;
+            fs::remove_dir(config.dir_name)?;
+            println!("removed directory '{}'.", config.dir_name);
 
             Ok(())
         }
@@ -58,4 +59,25 @@ pub fn run(config: &FolderConfig) -> io::Result<()> {
             ));
         }
     }
+}
+
+/// Recursively deletes the contents of a directory, while listing progress to stdout. This
+/// function will preserve the root directory, leaving it as an empty folder.
+pub fn delete_directory_contents(path: &path::Path) -> io::Result<()> {
+    let entries = fs::read_dir(path)?;
+
+    for entry in entries {
+        let entry = entry?.path();
+
+        if entry.is_file() {
+            fs::remove_file(&entry)?;
+            println!("removed file '{}'.", entry.display());
+        } else if entry.is_dir() {
+            delete_directory_contents(entry.as_path())?;
+            fs::remove_dir(&entry)?;
+            println!("removed directory '{}'.", entry.display());
+        }
+    }
+
+    Ok(())
 }
