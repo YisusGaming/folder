@@ -1,5 +1,7 @@
 use std::{fs, io};
 
+use crate::cli;
+
 #[derive(PartialEq)]
 pub enum Mode<'a> {
     NEW,
@@ -37,8 +39,17 @@ pub fn run(config: &FolderConfig) -> io::Result<()> {
             Ok(())
         }
         Mode::DELETE => {
-            /* TODO: Ask before removing. */
-            fs::remove_dir_all(config.dir_name)
+            if !cli::question(&format!(
+                "Are you sure you want to delete {} and all of its contents?",
+                config.dir_name
+            ))? {
+                return Ok(());
+            }
+
+            fs::remove_dir_all(config.dir_name)?;
+            println!("folder: deleted directory {}.", config.dir_name);
+
+            Ok(())
         }
         Mode::UNKNOWN(mode) => {
             return Err(io::Error::new(

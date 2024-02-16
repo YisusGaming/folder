@@ -81,16 +81,16 @@ pub fn run_options(ops: &[Options]) {
 /// This function won't return until the user provides a valid yes or no answer.
 ///
 /// This function will fail if any of the IO operations fail.
-pub fn question(q: &'static str) -> io::Result<bool> {
+pub fn question(q: &str) -> io::Result<bool> {
     let mut buf = String::new();
 
-    print!("{q} [(y)es, (n)n] ");
+    print!("{q} [(y)es, (n)o] ");
     io::stdout().flush()?;
 
     loop {
         io::stdin().read_line(&mut buf)?;
 
-        match buf.to_lowercase().as_str() {
+        match buf.to_lowercase().trim() {
             "yes" | "y" => return Ok(true),
             "no" | "n" => return Ok(false),
             _ => {}
