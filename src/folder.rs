@@ -1,71 +1,81 @@
-use std::process::{self, Command};
-use std::str::from_utf8;
+use std::{fs, io, path};
+
+use crate::cli;
 
 #[derive(PartialEq)]
-pub enum Mode {
+pub enum Mode<'a> {
     NEW,
     DELETE,
-    UNKNOWN,
+    UNKNOWN(&'a str),
 }
-impl Mode {
+impl<'a> Mode<'a> {
     /// Resolves the [`Mode`] Folder will run, which will be `Mode::NEW` if
     /// `arg` is "new", `Mode::DELETE` if `arg` is "del", or `Mode::UNKNOWN` if
     /// `arg` is anything else.
     pub fn resolve_mode(arg: &str) -> Mode {
-        if arg == "new" {
-            return Mode::NEW;
-        } else if arg == "del" {
-            return Mode::DELETE;
+        match arg {
+            "new" => Mode::NEW,
+            "del" => Mode::DELETE,
+            _ => Mode::UNKNOWN(arg),
         }
-
-        Mode::UNKNOWN
     }
 }
 
 /// Specifies the mode Folder will run and the dirname that will be used.
-pub struct FolderConfig {
-    pub mode: Mode,
-    pub dir_name: String,
-}
-
-/// Takes a buffer and returns an String
-/// replacing "mkdir: " and "rm: " for "folder: ".
-pub fn format_output(buf: &[u8]) -> String {
-    let str = from_utf8(&buf).unwrap_or("");
-    let str = str.replace("mkdir: ", "folder: ");
-    let str = str.replace("rm: ", "folder: ");
-
-    String::from(str.trim())
+pub struct FolderConfig<'a> {
+    pub mode: Mode<'a>,
+    pub dir_name: &'a str,
 }
 
 /// Executes Folder using the specified [`FolderConfig`].
-pub fn run(config: &FolderConfig) {
-    if config.mode == Mode::NEW {
-        let command = Command::new("sh")
-            .arg("-c")
-            .arg(format!("mkdir -v {}", config.dir_name))
-            .output()
-            .expect("Failed to spawn mkdir process");
+pub fn run(config: &FolderConfig) -> io::Result<()> {
+    match config.mode {
+        Mode::NEW => {
+            fs::create_dir_all(config.dir_name)?;
+            println!("folder: created directory '{}'.", config.dir_name);
 
-        let stdout = format_output(&command.stdout);
-        let stderr = format_output(&command.stderr);
-
-        if stdout != "" {
-            println!("{}", stdout);
+            Ok(())
         }
-        if stderr != "" {
-            eprintln!("{}", stderr);
-            process::exit(1);
+        Mode::DELETE => {
+            if !cli::question(&format!(
+                "Are you sure you want to delete '{}' and all of its contents?",
+                config.dir_name
+            ))? {
+                return Ok(());
+            }
+
+            delete_directory_contents(path::Path::new(config.dir_name))?;
+            fs::remove_dir(config.dir_name)?;
+            println!("removed directory '{}'.", config.dir_name);
+
+            Ok(())
         }
-    } else if config.mode == Mode::DELETE {
-        let command = Command::new("sh")
-            .arg("-c")
-            .arg(format!("rm -v -r -I {}", config.dir_name))
-            .spawn()
-            .expect("Failed to spawn rm process");
-
-        let output = command.wait_with_output().unwrap();
-
-        process::exit(output.status.code().unwrap_or(0));
+        Mode::UNKNOWN(mode) => {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidInput,
+                format!("folder: unknown mode \"{mode}\" passed in."),
+            ));
+        }
     }
+}
+
+/// Recursively deletes the contents of a directory, while listing progress to stdout. This
+/// function will preserve the root directory, leaving it as an empty folder.
+pub fn delete_directory_contents(path: &path::Path) -> io::Result<()> {
+    let entries = fs::read_dir(path)?;
+
+    for entry in entries {
+        let entry = entry?.path();
+
+        if entry.is_file() {
+            fs::remove_file(&entry)?;
+            println!("removed file '{}'.", entry.display());
+        } else if entry.is_dir() {
+            delete_directory_contents(entry.as_path())?;
+            fs::remove_dir(&entry)?;
+            println!("removed directory '{}'.", entry.display());
+        }
+    }
+
+    Ok(())
 }

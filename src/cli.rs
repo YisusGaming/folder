@@ -1,10 +1,13 @@
-use std::process;
+use std::{
+    io::{self, Write},
+    process,
+};
 
 // Should be the same as the one specified
 // at the Cargo.toml file.
-pub const VERSION: &str = "1.0.0";
+pub const VERSION: &str = "2.0.0";
 
-#[derive(PartialEq)]
+#[derive(Debug, PartialEq)]
 /// CLI options.
 pub enum Options {
     HELP,
@@ -24,7 +27,7 @@ pub fn parse_options(args: &[String]) {
 
     for arg in args {
         // Ignore arg if it's not formatted like an option.
-        if !arg.starts_with("--") || !arg.starts_with("-") {
+        if !arg.starts_with("--") && !arg.starts_with("-") {
             continue;
         }
 
@@ -65,9 +68,35 @@ pub fn run_options(ops: &[Options]) {
                 process::exit(0);
             }
             Options::UNKNOWN => {
-                eprintln!("folder: An UNKNOWN option was passed.");
+                eprintln!("folder: An unknown option was passed.");
                 process::exit(1);
             }
         }
+    }
+}
+
+/// Presents a question to the user with a yes or no answer. It returns `Ok(bool)` where bool is
+/// `true` if the answer was (y)es, or `false` if the answer was (n)o.
+///
+/// This function won't return until the user provides a valid yes or no answer.
+///
+/// This function will fail if any of the IO operations fail.
+pub fn question(q: &str) -> io::Result<bool> {
+    let mut buf = String::new();
+
+    print!("{q} [(y)es, (n)o] ");
+    io::stdout().flush()?;
+
+    loop {
+        io::stdin().read_line(&mut buf)?;
+
+        match buf.to_lowercase().trim() {
+            "yes" | "y" => return Ok(true),
+            "no" | "n" => return Ok(false),
+            _ => {}
+        }
+
+        print!("{q} [(y)es, (n)n] ");
+        io::stdout().flush()?;
     }
 }
