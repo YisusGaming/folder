@@ -1,4 +1,6 @@
-//! **Folder** is just a simple wrapper around `mkdir` and `rm` that allows you create and delete folders.
+//! **Folder** is a CLI tool that allows you manage folders in your filesystem. It's cross-platform.
+//!
+//! Currently, only creating and deleting folders is supported. More operations soon!
 //!
 //! Creating a folder looks like this:
 //!
@@ -6,7 +8,7 @@
 //! folder new dirname
 //! ```
 //!
-//! that'll run `mkdir -v dirname` for you.
+//! that'll create the path `dirname/`.
 //!
 //! Deleting folders looks like this:
 //!
@@ -14,9 +16,7 @@
 //! folder del dirname
 //! ```
 //!
-//! that'll run `rm -v -r -I dirname` for you.
-//!
-//! **Keep in mind!** This is not meant to be complete CLI to manage folders, it's just simply a convenience.
+//! that'll delete the path `dirname/`.
 
 use folder::FolderConfig;
 use std::env;
